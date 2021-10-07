@@ -39,6 +39,7 @@ trash_wheel_round<- trash_wheel_na_clean%>%
 precip_2019<- read_excel("./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 4)
 precip_2018<-read_excel("./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 5)
 
+head(precip_2019)
 precip_2019%>%
   mutate(year = 2019)
 ```
