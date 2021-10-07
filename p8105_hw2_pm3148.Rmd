@@ -1,0 +1,45 @@
+---
+title: "p8105_hw2_pm3148"
+author: "Pooja Mukund"
+date: "10/6/2021"
+output: html_document
+---
+
+#Load relevant packages
+```{r}
+library(tidyverse)
+library(readxl)
+```
+
+#Import Mr. Trash Wheel Dataset
+```{r}
+trash_wheel = read_excel("./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", col_types = c("guess", "guess", "guess", "guess", "guess", "guess","guess", "guess", "guess","guess", "guess", "guess","guess", "guess","skip", "skip", "skip"))
+
+str(trash_wheel)
+
+trash_wheel<- trash_wheel %>%
+   janitor::clean_names()%>%
+  
+trash_wheel_na_clean<- trash_wheel%>%
+  drop_na(dumpster)
+```
+
+```{r}
+trash_wheel_col <- select(trash_wheel_na_clean)
+
+trash_wheel_round<- trash_wheel_na_clean%>%
+  mutate(trash_wheel_col, 
+         sports_ball_rounded = round(sports_balls, 0))
+```
+```{r}
+
+```
+
+```{r}
+precip_2019<- read_excel("./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 4)
+precip_2018<-read_excel("./data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 5)
+
+precip_2019%>%
+  mutate(year = 2019)
+```
+
