@@ -525,11 +525,24 @@ joined_df_full</code></pre>
 ##  9 Isabella         
 ## 10 Hannah           
 ## # … with 3,011 more rows</code></pre>
+<pre class="r"><code>baby_names%&gt;%
+  janitor::clean_names()%&gt;%
+  distinct(year_of_birth)</code></pre>
+<pre><code>## # A tibble: 6 × 1
+##   year_of_birth
+##           &lt;dbl&gt;
+## 1          2016
+## 2          2015
+## 3          2014
+## 4          2013
+## 5          2012
+## 6          2011</code></pre>
 <pre class="r"><code>#Two ways of Asian and Pacific Islander being written and multiple ways of black non-Hispanic, and white non-Hispanic being written. Gender and first name variables look tidy already. 
 
 baby_names_tidy&lt;- baby_names%&gt;%
   janitor::clean_names()%&gt;%
   mutate(
+    childs_first_name = str_to_sentence(childs_first_name),
     ethnicity = replace(ethnicity, ethnicity==&quot;ASIAN AND PACI&quot;, &quot;ASIAN AND PACIFIC ISLANDER&quot;), 
     ethnicity = replace(ethnicity, ethnicity==&quot;BLACK NON HISP&quot;, &quot;BLACK NON HISPANIC&quot;),
     ethnicity = replace(ethnicity, ethnicity==&quot;WHITE NON HISP&quot;, &quot;WHITE NON HISPANIC&quot;)
@@ -537,302 +550,142 @@ baby_names_tidy&lt;- baby_names%&gt;%
   distinct()
 
 baby_names_tidy%&gt;%
-  filter(childs_first_name==&quot;Olivia&quot; &amp; gender==&quot;FEMALE&quot;)%&gt;%
+  filter(childs_first_name==&quot;Olivia&quot;)%&gt;%
+  select(-count)%&gt;%
   pivot_wider(
   names_from = &quot;year_of_birth&quot;, 
-  values_from = &quot;rank&quot;)%&gt;%
-  select(-c(gender, childs_first_name))%&gt;%
+  values_from = rank)%&gt;%
+  select(childs_first_name, gender, ethnicity, &quot;2011&quot;, &quot;2012&quot;, &quot;2013&quot;, &quot;2014&quot;, &quot;2015&quot;, &quot;2016&quot;)%&gt;%
 knitr::kable(caption= &quot;Rank in Popularity of the female baby name Olivia over time&quot;)</code></pre>
 <table>
 <caption>Rank in Popularity of the female baby name Olivia over time</caption>
 <thead>
 <tr class="header">
+<th align="left">childs_first_name</th>
+<th align="left">gender</th>
 <th align="left">ethnicity</th>
-<th align="right">count</th>
-<th align="right">2016</th>
-<th align="right">2015</th>
-<th align="right">2014</th>
+<th align="right">2011</th>
+<th align="right">2012</th>
 <th align="right">2013</th>
+<th align="right">2014</th>
+<th align="right">2015</th>
+<th align="right">2016</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
+<td align="left">Olivia</td>
+<td align="left">FEMALE</td>
 <td align="left">ASIAN AND PACIFIC ISLANDER</td>
-<td align="right">172</td>
-<td align="right">1</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-</tr>
-<tr class="even">
-<td align="left">BLACK NON HISPANIC</td>
-<td align="right">49</td>
-<td align="right">8</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">HISPANIC</td>
-<td align="right">108</td>
-<td align="right">13</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-</tr>
-<tr class="even">
-<td align="left">WHITE NON HISPANIC</td>
-<td align="right">230</td>
-<td align="right">1</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">ASIAN AND PACIFIC ISLANDER</td>
-<td align="right">188</td>
-<td align="right">NA</td>
-<td align="right">1</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-</tr>
-<tr class="even">
-<td align="left">BLACK NON HISPANIC</td>
-<td align="right">82</td>
-<td align="right">NA</td>
 <td align="right">4</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">HISPANIC</td>
-<td align="right">94</td>
-<td align="right">NA</td>
-<td align="right">16</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-</tr>
-<tr class="even">
-<td align="left">WHITE NON HISPANIC</td>
-<td align="right">225</td>
-<td align="right">NA</td>
-<td align="right">1</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">ASIAN AND PACIFIC ISLANDER</td>
-<td align="right">141</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">1</td>
-<td align="right">NA</td>
-</tr>
-<tr class="even">
-<td align="left">BLACK NON HISPANIC</td>
-<td align="right">52</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">8</td>
-<td align="right">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">HISPANIC</td>
-<td align="right">96</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">16</td>
-<td align="right">NA</td>
-</tr>
-<tr class="even">
-<td align="left">WHITE NON HISPANIC</td>
-<td align="right">248</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">1</td>
-<td align="right">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">ASIAN AND PACIFIC ISLANDER</td>
-<td align="right">109</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
 <td align="right">3</td>
+<td align="right">3</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
 </tr>
 <tr class="even">
+<td align="left">Olivia</td>
+<td align="left">FEMALE</td>
 <td align="left">BLACK NON HISPANIC</td>
-<td align="right">64</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">10</td>
+<td align="right">8</td>
 <td align="right">6</td>
+<td align="right">8</td>
+<td align="right">4</td>
+<td align="right">8</td>
 </tr>
 <tr class="odd">
+<td align="left">Olivia</td>
+<td align="left">FEMALE</td>
 <td align="left">HISPANIC</td>
-<td align="right">87</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">18</td>
 <td align="right">22</td>
+<td align="right">22</td>
+<td align="right">16</td>
+<td align="right">16</td>
+<td align="right">13</td>
 </tr>
 <tr class="even">
+<td align="left">Olivia</td>
+<td align="left">FEMALE</td>
 <td align="left">WHITE NON HISPANIC</td>
-<td align="right">233</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">2</td>
+<td align="right">4</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
 <td align="right">1</td>
 </tr>
 </tbody>
 </table>
 <pre class="r"><code>baby_names_tidy%&gt;%
   filter(childs_first_name==&quot;Ethan&quot; &amp; gender==&quot;MALE&quot;)%&gt;%
+  select(-count)%&gt;%
   pivot_wider(
   names_from = &quot;year_of_birth&quot;, 
   values_from = &quot;rank&quot;)%&gt;%
-  select(-c(gender, childs_first_name))%&gt;%
+  select(childs_first_name, gender, ethnicity, &quot;2011&quot;, &quot;2012&quot;, &quot;2013&quot;, &quot;2014&quot;, &quot;2015&quot;, &quot;2016&quot;)%&gt;%
 knitr::kable(caption= &quot;Rank in Popularity of the male baby name Ethan over time&quot;)</code></pre>
 <table>
 <caption>Rank in Popularity of the male baby name Ethan over time</caption>
 <thead>
 <tr class="header">
+<th align="left">childs_first_name</th>
+<th align="left">gender</th>
 <th align="left">ethnicity</th>
-<th align="right">count</th>
-<th align="right">2016</th>
-<th align="right">2015</th>
-<th align="right">2014</th>
+<th align="right">2011</th>
+<th align="right">2012</th>
 <th align="right">2013</th>
+<th align="right">2014</th>
+<th align="right">2015</th>
+<th align="right">2016</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
+<td align="left">Ethan</td>
+<td align="left">MALE</td>
 <td align="left">ASIAN AND PACIFIC ISLANDER</td>
-<td align="right">193</td>
 <td align="right">1</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-</tr>
-<tr class="even">
-<td align="left">BLACK NON HISPANIC</td>
-<td align="right">107</td>
-<td align="right">5</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">HISPANIC</td>
-<td align="right">250</td>
-<td align="right">7</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-</tr>
-<tr class="even">
-<td align="left">WHITE NON HISPANIC</td>
-<td align="right">133</td>
-<td align="right">20</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">ASIAN AND PACIFIC ISLANDER</td>
-<td align="right">172</td>
-<td align="right">NA</td>
 <td align="right">2</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">1</td>
 </tr>
 <tr class="even">
+<td align="left">Ethan</td>
+<td align="left">MALE</td>
 <td align="left">BLACK NON HISPANIC</td>
-<td align="right">111</td>
-<td align="right">NA</td>
-<td align="right">5</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">HISPANIC</td>
-<td align="right">332</td>
-<td align="right">NA</td>
+<td align="right">6</td>
 <td align="right">3</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-</tr>
-<tr class="even">
-<td align="left">WHITE NON HISPANIC</td>
-<td align="right">138</td>
-<td align="right">NA</td>
-<td align="right">19</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">ASIAN AND PACIFIC ISLANDER</td>
-<td align="right">179</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">2</td>
-<td align="right">NA</td>
-</tr>
-<tr class="even">
-<td align="left">BLACK NON HISPANIC</td>
-<td align="right">138</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
 <td align="right">1</td>
-<td align="right">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">HISPANIC</td>
-<td align="right">262</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">1</td>
 <td align="right">5</td>
-<td align="right">NA</td>
-</tr>
-<tr class="even">
-<td align="left">WHITE NON HISPANIC</td>
-<td align="right">149</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">18</td>
-<td align="right">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">ASIAN AND PACIFIC ISLANDER</td>
-<td align="right">165</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">2</td>
-</tr>
-<tr class="even">
-<td align="left">BLACK NON HISPANIC</td>
-<td align="right">146</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">1</td>
-</tr>
-<tr class="odd">
-<td align="left">HISPANIC</td>
-<td align="right">252</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
 <td align="right">5</td>
 </tr>
+<tr class="odd">
+<td align="left">Ethan</td>
+<td align="left">MALE</td>
+<td align="left">HISPANIC</td>
+<td align="right">6</td>
+<td align="right">4</td>
+<td align="right">5</td>
+<td align="right">5</td>
+<td align="right">3</td>
+<td align="right">7</td>
+</tr>
 <tr class="even">
+<td align="left">Ethan</td>
+<td align="left">MALE</td>
 <td align="left">WHITE NON HISPANIC</td>
-<td align="right">125</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
-<td align="right">NA</td>
+<td align="right">26</td>
+<td align="right">21</td>
 <td align="right">23</td>
+<td align="right">18</td>
+<td align="right">19</td>
+<td align="right">20</td>
 </tr>
 </tbody>
 </table>
