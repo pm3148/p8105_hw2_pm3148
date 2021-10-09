@@ -43,4 +43,123 @@ head(precip_2019)
 precip_2019%>%
   mutate(year = 2019)
 ```
+##Problem 2
+##pols-month data cleaning 
+```{r}
+pols_month<- read_csv("data/pols-month.csv")
+head(pols_month)
+pols_month_tidy<-pols_month%>%
+  separate(mon, into = c("year", "month", "day"), sep="-")%>%
+  mutate(
+    month = replace(month, month=="01", "January"),
+    month = replace(month, month=="02", "February"),
+    month = replace(month, month=="03", "March"),
+    month = replace(month, month=="04", "April"),
+    month = replace(month, month=="05", "May"),
+    month = replace(month, month=="06", "June"),
+    month = replace(month, month=="07", "July"),
+    month = replace(month, month=="08", "August"),
+    month = replace(month, month=="09", "September"),
+    month = replace(month, month=="10", "October"),
+    month = replace(month, month=="11", "November"),
+    month = replace(month, month=="12", "December"),
+    pres = if_else(prez_dem>0, "dem", "gop"))%>%
+  select(-prez_dem, -c(prez_dem, prez_gop, day))
+
+```
+## snp data cleaning 
+```{r}
+snp<- read_csv("data/snp.csv")
+head(snp)
+snp_tidy<-snp%>%
+  separate(date, into = c("month", "day", "year"), sep="/")%>%
+  mutate(
+    month = replace(month, month=="1", "January"),
+    month = replace(month, month=="2", "February"),
+    month = replace(month, month=="3", "March"),
+    month = replace(month, month=="4", "April"),
+    month = replace(month, month=="5", "May"),
+    month = replace(month, month=="6", "June"),
+    month = replace(month, month=="7", "July"),
+    month = replace(month, month=="8", "August"),
+    month = replace(month, month=="9", "September"),
+    month = replace(month, month=="10", "October"),
+    month = replace(month, month=="11", "November"),
+    month = replace(month, month=="12", "December"),
+    year_num = as.numeric(year), 
+    year_clean = ifelse(year_num>21, 1900+year_num, 2000+year_num), 
+    year = as.character(year_clean)
+  )%>%
+  select(year, month, close )
+```
+```{r}
+unemployment<- read_csv("data/unemployment.csv")
+head(unemployment)
+```
+##unemployment data cleaning 
+```{r}
+unemployment_tidy_data <- 
+  unemployment%>%
+  pivot_longer(!Year, names_to = "month", values_to = "unemployment_percentage")%>%
+  mutate(
+    Year = as.character(Year),
+    month = replace(month, month=="Jan", "January"),
+    month = replace(month, month=="Feb", "February"),
+    month = replace(month, month=="Mar", "March"),
+    month = replace(month, month=="Apr", "April"),
+    month = replace(month, month=="May", "May"),
+    month = replace(month, month=="Jun", "June"),
+    month = replace(month, month=="Jul", "July"),
+    month = replace(month, month=="Aug", "August"),
+    month = replace(month, month=="Sep", "September"),
+    month = replace(month, month=="Oct", "October"),
+    month = replace(month, month=="Nov", "November"),
+    month = replace(month, month=="Dec", "December"))%>%
+  janitor::clean_names()
+head(unemployment_tidy_data)
+```
+
+```{r}
+joined_df = left_join(pols_month_tidy, snp_tidy, by = c("year", "month"))
+joined_df_full = left_join(joined_df, unemployment_tidy_data, by = c("year", "month"))
+joined_df_full
+```
+##Problem 3 
+
+```{r}
+baby_names<-read_csv("data/Popular_Baby_names.csv")
+head(baby_names)
+
+baby_names%>%
+  janitor::clean_names()%>%
+  distinct(ethnicity)
+
+baby_names%>%
+  janitor::clean_names()%>%
+  distinct(gender)
+
+#Two ways of Asian and Pacific Islander being written and multiple ways of black non-hispanic, and white non-hispanic being written 
+
+baby_names_tidy<- baby_names%>%
+  janitor::clean_names()%>%
+  mutate(
+    ethnicity = replace(ethnicity, ethnicity=="ASIAN AND PACI", "ASIAN AND PACIFIC ISLANDER"), 
+    ethnicity = replace(ethnicity, ethnicity=="BLACK NON HISP", "BLACK NON HISPANIC"),
+    ethnicity = replace(ethnicity, ethnicity=="WHITE NON HISP", "WHITE NON HISPANIC")
+  )%>%
+  distinct()
+
+baby_names_tidy%>%
+  filter(childs_first_name=="Olivia" && gender=="FEMALE")%>%
+  pivot_wider(
+  names_from = "year_of_birth", 
+  values_from = "rank")%>%
+  select(-c(gender, childs_first_name))%>%
+knitr::kable(caption= "Rank in Popularity of the female baby name Olivia over time")
+```
+
+```{r}
+baby_names_tidy%>%
+  filter(gender=="MALE"&& ethnicity=="WHITE NON HISPANIC")
+```
 
